@@ -113,6 +113,8 @@ type Particles = {
   morph1: () => void;
   morph2: () => void;
   morph3: () => void;
+  colorA: string;
+  colorB: string;
 };
 
 let particles: Particles | null = null;
@@ -172,6 +174,8 @@ gltfLoader.load("./models.glb", (gltf) => {
     new THREE.BufferAttribute(sizesArray, 1),
   );
   // Material
+  particles.colorA = "#ff7300";
+  particles.colorB = "#0091ff";
   particles.material = new THREE.ShaderMaterial({
     vertexShader: particlesVertexShader,
     fragmentShader: particlesFragmentShader,
@@ -184,6 +188,8 @@ gltfLoader.load("./models.glb", (gltf) => {
         ),
       ),
       uProgress: new THREE.Uniform(0),
+      uColorA: new THREE.Uniform(new THREE.Color(particles.colorA)),
+      uColorB: new THREE.Uniform(new THREE.Color(particles.colorB)),
     },
     blending: THREE.AdditiveBlending,
     depthWrite: false,
@@ -245,6 +251,17 @@ gltfLoader.load("./models.glb", (gltf) => {
   gui.add(particleSystem, "morph1").name("Morph 1");
   gui.add(particleSystem, "morph2").name("Morph 2");
   gui.add(particleSystem, "morph3").name("Morph 3");
+
+  gui.addColor(particleSystem, "colorA").onChange(() => {
+    particleSystem.material.uniforms.uColorA.value.set(
+      new THREE.Color(particleSystem.colorA),
+    );
+  });
+  gui.addColor(particleSystem, "colorB").onChange(() => {
+    particleSystem.material.uniforms.uColorB.value.set(
+      new THREE.Color(particleSystem.colorB),
+    );
+  });
 });
 
 /**

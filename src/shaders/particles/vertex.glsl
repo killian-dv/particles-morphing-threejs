@@ -1,9 +1,13 @@
 uniform vec2 uResolution;
 uniform float uSize;
 uniform float uProgress;
+uniform vec3 uColorA;
+uniform vec3 uColorB;
 
 attribute vec3 aPositionTarget;
 attribute float aSize;
+
+varying vec3 vColor;
 
 #include ../includes/simplex-noise-3D.glsl
 
@@ -31,4 +35,7 @@ void main()
     // Point size
     gl_PointSize = uSize * uResolution.y * aSize;
     gl_PointSize *= (1.0 / - viewPosition.z);
+
+    // varying
+    vColor = mix(uColorA, uColorB, noise);
 }
