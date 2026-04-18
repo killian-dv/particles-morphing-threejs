@@ -48,10 +48,12 @@ window.addEventListener("resize", () => {
   sizes.pixelRatio = Math.min(window.devicePixelRatio, 2);
 
   // Materials
-  particles.material.uniforms.uResolution.value.set(
-    sizes.width * sizes.pixelRatio,
-    sizes.height * sizes.pixelRatio,
-  );
+  if (particles) {
+    particles.material.uniforms.uResolution.value.set(
+      sizes.width * sizes.pixelRatio,
+      sizes.height * sizes.pixelRatio,
+    );
+  }
 
   // Update camera
   camera.aspect = sizes.width / sizes.height;
@@ -104,32 +106,37 @@ type Particles = {
   points: THREE.Points;
 };
 
-const particles = {} as Particles;
+let particles: Particles | null = null;
 
-// Geometry
-particles.geometry = new THREE.SphereGeometry(3);
-particles.geometry.setIndex(null);
+// load models
+gltfLoader.load("./models.glb", (gltf) => {
+  particles = {} as Particles;
 
-// Material
-particles.material = new THREE.ShaderMaterial({
-  vertexShader: particlesVertexShader,
-  fragmentShader: particlesFragmentShader,
-  uniforms: {
-    uSize: new THREE.Uniform(0.4),
-    uResolution: new THREE.Uniform(
-      new THREE.Vector2(
-        sizes.width * sizes.pixelRatio,
-        sizes.height * sizes.pixelRatio,
+  // Geometry
+  particles.geometry = new THREE.SphereGeometry(3);
+  particles.geometry.setIndex(null);
+
+  // Material
+  particles.material = new THREE.ShaderMaterial({
+    vertexShader: particlesVertexShader,
+    fragmentShader: particlesFragmentShader,
+    uniforms: {
+      uSize: new THREE.Uniform(0.4),
+      uResolution: new THREE.Uniform(
+        new THREE.Vector2(
+          sizes.width * sizes.pixelRatio,
+          sizes.height * sizes.pixelRatio,
+        ),
       ),
-    ),
-  },
-  blending: THREE.AdditiveBlending,
-  depthWrite: false,
-});
+    },
+    blending: THREE.AdditiveBlending,
+    depthWrite: false,
+  });
 
-// Points
-particles.points = new THREE.Points(particles.geometry, particles.material);
-scene.add(particles.points);
+  // Points
+  particles.points = new THREE.Points(particles.geometry, particles.material);
+  scene.add(particles.points);
+});
 
 /**
  * Animate
