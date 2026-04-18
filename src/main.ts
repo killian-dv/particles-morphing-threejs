@@ -197,6 +197,7 @@ gltfLoader.load("./models.glb", (gltf) => {
 
   // Points
   particles.points = new THREE.Points(particles.geometry, particles.material);
+  particles.points.frustumCulled = false;
   scene.add(particles.points);
 
   // methods
