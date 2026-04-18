@@ -3,6 +3,7 @@ uniform float uSize;
 uniform float uProgress;
 
 attribute vec3 aPositionTarget;
+attribute float aSize;
 
 #include ../includes/simplex-noise-3D.glsl
 
@@ -28,6 +29,6 @@ void main()
     gl_Position = projectedPosition;
 
     // Point size
-    gl_PointSize = uSize * uResolution.y;
+    gl_PointSize = uSize * uResolution.y * aSize;
     gl_PointSize *= (1.0 / - viewPosition.z);
 }
